@@ -5,5 +5,4 @@
   tasks:
 
   - name: Install apache2 package
-    yum:
-      update: yes
+    ansible.builtin.ping:
