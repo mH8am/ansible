@@ -1,0 +1,14 @@
+---
+ - hosts: 192.168.17.139
+   vars:
+    date: "{{ lookup('pipe','date +%Y_%m_%d-%H-%M') }}"
+   tasks:
+    - name: Backup DataBase 
+      shell : mysqldump -u root -p'rootroot' glpi2 > glpi2--{{ date }}.sql -f
+    - name: Fetch the file from the 131 to Master
+      fetch: src=/data/Glpi_Backups/glpi2--{{ date }}.sql   dest=buffer/ flat=yes
+      when: "{{ 192.168.17.139 }}"
+
+    - name: Copy the file from master to mwiapp02
+      copy: src=buffer/glpi2--{{ date }}.sql dest=/tmp/
+      when: "{{ 192.168.17.130 }}"
